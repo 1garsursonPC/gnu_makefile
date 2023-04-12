@@ -37,7 +37,7 @@ HDRFILES := $(HDRFILES:%.h=$(HDRDIR)/%.h)
 .DELETE_ON_ERROR:
 
 $(NAME): $(OBJFILES) # default goal
-	$(CC) $(LDFLAGS) -o $@ $(OBJFILES)
+	$(CC) $(LDFLAGS) $(OBJFILES) -o $@
 
 clean:
 	rm -rf $(OBJDIR)
@@ -54,7 +54,7 @@ $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	$(CC) -c $(CFLAGS) -I $(HDRDIR)/ $< -o $@
 
 $(DEPDIR)/%.d: $(SRCDIR)/%.c
-	@echo "Generating $@"
+	@echo "$(CC) -I $(HDRDIR)/ -MM $(CFLAGS) $< > $@"
 	@mkdir -p $(dir $@)
 	@set -e; rm -f $@; \
 	$(CC) -I $(HDRDIR)/ -MM $(CFLAGS) $< > $@.$$$$; \

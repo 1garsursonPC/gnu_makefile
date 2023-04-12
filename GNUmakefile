@@ -11,8 +11,12 @@ HDRDIR ?= hdr
 OBJDIR ?= obj
 DEPDIR ?= dep
 
-LDFLAGS +=
 CFLAGS += -Wall -Wextra -Werror
+CPPFLAGS +=
+
+LDFLAGS +=
+LOADLIBES +=
+LDLIBS +=
 
 
 #############################################################
@@ -37,7 +41,7 @@ HDRFILES := $(HDRFILES:%.h=$(HDRDIR)/%.h)
 .DELETE_ON_ERROR:
 
 $(NAME): $(OBJFILES) # default goal
-	$(CC) $(LDFLAGS) $(OBJFILES) -o $@
+	$(CC) $(LDFLAGS) $(LOADLIBES) $(LDLIBS) $(OBJFILES) -o $@
 
 clean:
 	rm -rf $(OBJDIR)
@@ -51,13 +55,13 @@ clean:
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@mkdir -p $(dir $@)
-	$(CC) -c $(CFLAGS) -I $(HDRDIR)/ $< -o $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -I $(HDRDIR)/ -c $< -o $@
 
 $(DEPDIR)/%.d: $(SRCDIR)/%.c
-	@echo "$(CC) -I $(HDRDIR)/ -MM $(CFLAGS) $< > $@"
+	@echo "$(CC) $(CFLAGS) $(CPPFLAGS) -I $(HDRDIR)/ -MM $< > $@"
 	@mkdir -p $(dir $@)
 	@set -e; rm -f $@; \
-	$(CC) -I $(HDRDIR)/ -MM $(CFLAGS) $< > $@.$$$$; \
+	$(CC) $(CFLAGS) $(CPPFLAGS) -I $(HDRDIR)/ -MM $< > $@.$$$$; \
 	sed 's,\($*\)\.o[ :]*,$(OBJDIR)/\1.o $@ : ,g' < $@.$$$$ > $@; \
 	rm -f $@.$$$$
 
